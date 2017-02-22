@@ -11,7 +11,17 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import mysql.connector
+import csv
 
+
+# set up mysql auth
+with open('/webroot_auth/mysql_auth_py.txt', 'r') as csvfile:
+	mysql_auth = csv.reader(csvfile, delimiter=',')
+	data = list(mysql_auth)
+	mysql_user = data[0][0]
+	mysql_password = data[0][1]
+	
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -32,6 +42,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
 	'rest_framework',
+	'snippets.apps.SnippetsConfig',
 	'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,11 +87,23 @@ WSGI_APPLICATION = 'tutorial.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'rest_py',
+        'USER': mysql_user,
+        'PASSWORD': mysql_password,
+        'HOST': '127.0.0.1',
+        'STORAGE_ENGINE': 'MyISAM'
+    }
+}
+
+"""
+DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -112,7 +135,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
