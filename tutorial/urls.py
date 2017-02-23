@@ -21,7 +21,7 @@ from snippets import views
 
 
 router = routers.DefaultRouter()
-#router.register(r'users', quickstart.views.UserViewSet)
+router.register(r'users', views.UserViewSet)
 #router.register(r'groups', quickstart.views.GroupViewSet)
 router.register(r'snippets', views.SnippetViewSet)
 
