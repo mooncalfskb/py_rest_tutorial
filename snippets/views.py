@@ -14,12 +14,20 @@ from snippets.serializers import SnippetSerializer
 from snippets.serializers import UserSerializer
 from rest_framework import permissions
 from snippets.permissions import IsOwnerOrReadOnly
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
 
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'snippets': reverse('snippet-list', request=request, format=format)
+    })
 
 class SnippetList(generics.ListCreateAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     
     def perform_create(self, serializer):
     	serializer.save(owner=self.request.user)
@@ -38,17 +46,15 @@ class UserDetail(generics.RetrieveAPIView):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
+"""
 class UserViewSet(viewsets.ModelViewSet):
-	"""
-	API endpoint that allows users to be viewed or edited.
-    """
+	#API endpoint that allows users to be viewed or edited.
 	queryset = User.objects.all().order_by('-date_joined')
 	serializer_class = UserSerializer
 
 class SnippetViewSet(viewsets.ModelViewSet):
-	"""
-	API endpoint that allows users to be viewed or edited.
-	"""
+	#API endpoint that allows users to be viewed or edited.
 	queryset = Snippet.objects.all()
 	serializer_class = SnippetSerializer
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly,)
+"""	
